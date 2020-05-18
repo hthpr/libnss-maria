@@ -20,13 +20,13 @@ void maria_load_string_setting(config_t libconfig_object, char *destination, con
   if(config_lookup_string(&libconfig_object, selector, &buffer) == CONFIG_TRUE) {
     strncpy(destination, buffer, 1023);
   } else {
-    debug_print_var("cannot load setting from selector=%s", selector);
+    //debug_print_var("cannot load setting from selector=%s", selector);
   }
 }
 
 void maria_load_int64_setting(config_t libconfig_object, long long *destination, const char *selector) {
   if(config_lookup_int64(&libconfig_object, selector, destination) == CONFIG_FALSE) {
-    debug_print_var("cannot load setting from selector=%s", selector);
+    //debug_print_var("cannot load setting from selector=%s", selector);
   }
 }
 
@@ -60,6 +60,7 @@ int maria_set_config_from_file(const char *path, Maria_config *config) {
 
       config_destroy (&libconfig_object);
 
+/*
       debug_print_var("settings dbhost:%s;dbname:%s;\
 dbuser:%s;dbpass:%s;dbport:%lld;getpwnam:%s;getpwuid:%s;getpwent:%s;getspnam:%s;\
 getspent:%s;getgrnam:%s;getgrgid:%s;getgrent:%s;memsbygid:%s;gidsbymem:%s",
@@ -79,7 +80,7 @@ getspent:%s;getgrnam:%s;getgrgid:%s;getgrent:%s;memsbygid:%s;gidsbymem:%s",
         config->memsbygid,
         config->gidsbymem
       );
-
+*/
       return 0;
     } else {
       maria_log("error found in file %s, message: %s, line: %i",

@@ -117,16 +117,18 @@ enum nss_status copy_group_members_to_group(
   int ptr_size = sizeof(char*) * (rows_len + 1);
   
   if (*occupied_buffer + ptr_size > buflen) {
+    printf("first buffer out of range, buflen: %zu\n", buflen);
     *errnop = ERANGE;
     return NSS_STATUS_TRYAGAIN;
   }
-
+  puts("buffer first ok");
   *occupied_buffer += ptr_size;
 
   for(my_ulonglong i = 0; i < rows_len; i++) {
     MYSQL_ROW row = mysql_fetch_row(members_query_result);
 
     if (row == NULL) {
+      puts("row is null");
       *errnop = EAGAIN;
       return NSS_STATUS_TRYAGAIN;
     }
@@ -135,9 +137,11 @@ enum nss_status copy_group_members_to_group(
     size_t name_l = strlen(name);
 
     if (*occupied_buffer + name_l + 1 > buflen) {
+      printf("second buffer out of range, buflen: %zu\n", buflen);
       *errnop = ERANGE;
       return NSS_STATUS_TRYAGAIN;
     }
+    puts("buffer second ok");
 
     // TODO: should work, but refactor
     #pragma GCC diagnostic push

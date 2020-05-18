@@ -224,7 +224,7 @@ enum nss_status _nss_maria_getgrent_r (
   snprintf(gid_as_string, 255, "%d", group_result->gr_gid);
 
   if((members_status = maria_query_with_param(
-    "_nss_maria_getgrnam_r",
+    "_nss_maria_getgrent_r / memsbygid",
     settings->memsbygid,
     gid_as_string,
     settings,
@@ -237,6 +237,7 @@ enum nss_status _nss_maria_getgrent_r (
     return members_status;
   }
 
+  puts("blabla");
   members_copy_status = copy_group_members_to_group(
     group_members_result,
     group_result,
@@ -259,7 +260,7 @@ enum nss_status _nss_maria_setgrent (void) {
   READ_USER_CONFIG(&err);
 
   enum nss_status status = maria_query_no_param(
-    "_nss_maria_setspent",
+    "_nss_maria_setgrent / getgrent",
     settings->getgrent,
     settings,
     &group_dbconn,
