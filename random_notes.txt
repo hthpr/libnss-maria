@@ -119,3 +119,8 @@ I've chosen libconfig, because:
 - libyaml is event based and I don't really understand it. Also YAML depends on indentation (or braces).
 - libconfig is used by nginx, so it is not a big unknown. It has multiline strings and is multiplatform (BSD, ...)
 
+
+
+(1..108).each do |i|; num = sprintf("%03d", i); puts "INSERT INTO users (id, username, gid, homedir) VALUES ('10#{num}', 'user#{num}', '10000', '/home/user#{num}');"; end
+(1..108).each do |i|; num = sprintf("%03d", i); puts "INSERT INTO groups_users (group_id, user_id) VALUES ('10000', '10#{num}');"; end
+

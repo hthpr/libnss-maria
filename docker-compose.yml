@@ -9,7 +9,7 @@ services:
     stdin_open: true
     tty: true
     command: /bin/bash
-    links:
+    depends_on:
       - database
     environment:
       - DOCKER=true
