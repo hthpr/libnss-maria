@@ -1,13 +1,19 @@
 #include "result_handler.h"
 
-enum nss_status copy_db_row_to_passwd(MYSQL_ROW row, struct passwd *passwd_result, char *buffer, size_t buflen, int *errnop) {
+enum nss_status copy_db_row_to_passwd(MYSQL_ROW row, struct passwd *passwd_result, char *buffer, size_t buflen, unsigned int fields, int *errnop) {
   size_t username_l = strlen(row[0]);
   size_t password_l = strlen(row[1]);
   size_t gecos_l = strlen(row[4]);
   size_t homedir_l = strlen(row[5]);
   size_t shell_l = strlen(row[6]);
+  size_t class_l = 0;
 
-  if (username_l + password_l + gecos_l + homedir_l + shell_l + 5 > buflen) {
+#ifdef HAVE_STRUCT_PASSWD_PW_CLASS
+  if (fields > 7)
+    class_l = strlen(row[7]);
+#endif
+
+  if (username_l + password_l + gecos_l + homedir_l + shell_l + class_l + 5 > buflen) {
     *errnop = ERANGE;
     return NSS_STATUS_TRYAGAIN;
   }
@@ -34,9 +40,28 @@ enum nss_status copy_db_row_to_passwd(MYSQL_ROW row, struct passwd *passwd_resul
   passwd_result->pw_dir = homedir_buf;
   passwd_result->pw_shell = shell_buf;
 
+#ifdef HAVE_STRUCT_PASSWD_PW_CLASS
+  if (fields > 7) {
+    char *class_buf = shell_buf + shell_l + 1;
+    strncpy(class_buf, row[7], class_l);
+    passwd_result->pw_class = class_buf;
+  }
+#endif
+
+#ifdef HAVE_STRUCT_PASSWD_PW_CHANGE
+  if (fields > 8)
+    passwd_result->pw_change = strtoul(row[8], NULL, 10);
+#endif
+
+#ifdef HAVE_STRUCT_PASSWD_PW_EXPIRE
+  if (fields > 9)
+    passwd_result->pw_expire = strtoul(row[9], NULL, 10);
+#endif
+
   return NSS_STATUS_SUCCESS;
 }
 
+#ifdef HAVE_SHADOW_H
 enum nss_status copy_db_row_to_shadow(MYSQL_ROW row, struct spwd *shadow_result, char *buffer, size_t buflen, int *errnop) {
   size_t username_l = strlen(row[0]);
   size_t password_l = strlen(row[1]);
@@ -66,6 +91,7 @@ enum nss_status copy_db_row_to_shadow(MYSQL_ROW row, struct spwd *shadow_result,
 
   return NSS_STATUS_SUCCESS;
 }
+#endif /* HAVE_SHADOW_H */
 
 enum nss_status copy_db_row_to_group(
   MYSQL_ROW row,
@@ -141,8 +167,12 @@ enum nss_status copy_group_members_to_group(
 
     // TODO: should work, but refactor
     #pragma GCC diagnostic push
+#if !defined(__has_warning) || __has_warning("-Wstringop-truncation")
     #pragma GCC diagnostic ignored "-Wstringop-truncation"
+#endif
+#if !defined(__has_warning) || __has_warning("-Wstringop-overflow")
     #pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
       strncpy(&(buffer[*occupied_buffer]), name, name_l);
     #pragma GCC diagnostic pop
     ptr_array[i] = &(buffer[*occupied_buffer]);

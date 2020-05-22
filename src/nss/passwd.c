@@ -42,7 +42,8 @@ enum nss_status _nss_maria_getpwnam_r (
     return row_status;
   }
 
-  enum nss_status result_status = copy_db_row_to_passwd(row, passwd_result, buffer, buflen, errnop);
+  unsigned int fields = mysql_num_fields(result);
+  enum nss_status result_status = copy_db_row_to_passwd(row, passwd_result, buffer, buflen, fields, errnop);
 
   CLEANUP();
   return result_status;
@@ -91,7 +92,8 @@ enum nss_status _nss_maria_getpwuid_r (
     return row_status;
   }
 
-  enum nss_status result_status = copy_db_row_to_passwd(row, passwd_result, buffer, buflen, errnop);
+  unsigned int fields = mysql_num_fields(result);
+  enum nss_status result_status = copy_db_row_to_passwd(row, passwd_result, buffer, buflen, fields, errnop);
 
   CLEANUP();
   return result_status;
@@ -111,7 +113,8 @@ enum nss_status _nss_maria_getpwent_r (
     return row_status;
   }
 
-  return copy_db_row_to_passwd(row, passwd_result, buffer, buflen, errnop);
+  unsigned int fields = mysql_num_fields(passwd_dbresult);
+  return copy_db_row_to_passwd(row, passwd_result, buffer, buflen, fields, errnop);
 }
 
 enum nss_status _nss_maria_setpwent (void) {

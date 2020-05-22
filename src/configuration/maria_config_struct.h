@@ -2,6 +2,8 @@
 the configuration file uses libconfig library (syntax), i.e. is nginx-like
 */
 
+#include "config.h"
+
 #ifndef MARIA_CONFIG_STRUCT_H
 #define MARIA_CONFIG_STRUCT_H
 
@@ -20,11 +22,13 @@ typedef struct Maria_configs {
   // get all users
   char getpwent[8192];
 
+#ifdef HAVE_SHADOW_H
   // shadow SQL queries
   // get shadow item by name
   char getspnam[8192];
   // get all shadow items
   char getspent[8192];
+#endif /* HAVE_SHADOW_H */
 
   // group SQL queries
   // get group by name

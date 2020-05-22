@@ -8,7 +8,9 @@ void maria_initialize_config(Maria_config *config) {
   config->dbport = 3306;
 
   config->getpwnam[0] = config->getpwuid[0] = config->getpwent[0] = '\0';
+#ifdef HAVE_SHADOW_H
   config->getspnam[0] = config->getspent[0] = '\0';
+#endif
   config->getgrnam[0] = config->getgrgid[0] = config->getgrent[0] = '\0';
   config->memsbygid[0] = config->gidsbymem[0] = '\0';
 }
@@ -48,8 +50,10 @@ int maria_set_config_from_file(const char *path, Maria_config *config) {
       maria_load_string_setting(libconfig_object, config->getpwuid, "nss_queries.getpwuid");
       maria_load_string_setting(libconfig_object, config->getpwent, "nss_queries.getpwent");
 
+#ifdef HAVE_SHADOW_H
       maria_load_string_setting(libconfig_object, config->getspnam, "nss_queries.getspnam");
       maria_load_string_setting(libconfig_object, config->getspent, "nss_queries.getspent");
+#endif
 
       maria_load_string_setting(libconfig_object, config->getgrnam, "nss_queries.getgrnam");
       maria_load_string_setting(libconfig_object, config->getgrgid, "nss_queries.getgrgid");
@@ -60,6 +64,7 @@ int maria_set_config_from_file(const char *path, Maria_config *config) {
 
       config_destroy (&libconfig_object);
 
+#ifdef HAVE_SHADOW_H
       debug_print_var("settings dbhost:%s;dbname:%s;\
 dbuser:%s;dbpass:%s;dbport:%lld;getpwnam:%s;getpwuid:%s;getpwent:%s;getspnam:%s;\
 getspent:%s;getgrnam:%s;getgrgid:%s;getgrent:%s;memsbygid:%s;gidsbymem:%s",
@@ -79,6 +84,25 @@ getspent:%s;getgrnam:%s;getgrgid:%s;getgrent:%s;memsbygid:%s;gidsbymem:%s",
         config->memsbygid,
         config->gidsbymem
       );
+#else
+      debug_print_var("settings dbhost:%s;dbname:%s;\
+dbuser:%s;dbpass:%s;dbport:%lld;getpwnam:%s;getpwuid:%s;getpwent:%s;\
+getgrnam:%s;getgrgid:%s;getgrent:%s;memsbygid:%s;gidsbymem:%s",
+        config->dbhost,
+        config->dbname,
+        config->dbuser,
+        config->dbpass,
+        config->dbport,
+        config->getpwnam,
+        config->getpwuid,
+        config->getpwent,
+        config->getgrnam,
+        config->getgrgid,
+        config->getgrent,
+        config->memsbygid,
+        config->gidsbymem
+      );
+#endif /* HAVE_SHADOW_H */
 
       return 0;
     } else {

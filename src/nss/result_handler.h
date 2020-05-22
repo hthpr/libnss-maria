@@ -7,12 +7,17 @@
 #include <errno.h>
 #include <nss.h>
 #include <pwd.h>
+#ifdef HAVE_SHADOW_H
 #include <shadow.h>
+#endif
 #include <grp.h>
 #include <mysql.h>
+#include "config.h"
 
-enum nss_status copy_db_row_to_passwd(MYSQL_ROW row, struct passwd *passwd_result, char *buffer, size_t buflen, int *errnop);
+enum nss_status copy_db_row_to_passwd(MYSQL_ROW row, struct passwd *passwd_result, char *buffer, size_t buflen, unsigned int fields, int *errnop);
+#ifdef HAVE_SHADOW_H
 enum nss_status copy_db_row_to_shadow(MYSQL_ROW row, struct spwd *shadow_result, char *buffer, size_t buflen, int *errnop);
+#endif
 enum nss_status copy_db_row_to_group(
   MYSQL_ROW row,
   struct group *group_result,

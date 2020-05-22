@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
-project (nss_maria)
+project (nss_maria VERSION 0.9 LANGUAGES C)
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(ENV{COMPILE_OPTIONS} "\
 -pipe;-pedantic;-Wall;-Wextra;-Wshadow;-Wno-missing-field-initializers;\
@@ -10,7 +12,7 @@ set(ENV{COMPILE_OPTIONS} "\
 -Wcast-align;-Wwrite-strings;-Winline;-Wformat-nonliteral;-Wformat-security;\
 -Wswitch-enum;\
 -Winit-self;-Wmissing-include-dirs;-Wundef;-Waggregate-return;-Wnested-externs;\
--Wunsafe-loop-optimizations;-Winvalid-pch;-Wcast-qual;\
+-Wunavailable-declarations;-Winvalid-pch;-Wcast-qual;\
 --std=c11\
 ")
 set(ENV{DEBUG_OPTIONS} "-g;-ggdb;-O0")
@@ -22,8 +24,17 @@ else()
   add_compile_options($ENV{COMPILE_OPTIONS} $ENV{RELEASE_OPTIONS})
 endif()
 
+include(DefinePlatformDefaults.cmake)
+
+# config.h checks
+include(ConfigureChecks.cmake)
+configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
 add_subdirectory(src)
+
+if (NOT FREEBSD)
 add_subdirectory(test)
+endif (NOT FREEBSD)
 
 # this needs to be here and not in test/CMakeLists.txt
 enable_testing()

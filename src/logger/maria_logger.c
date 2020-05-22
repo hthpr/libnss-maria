@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "maria_logger.h"
 
+__attribute__((format(printf, 1, 2)))
 void maria_log(const char *message, ...) {
   char assembled_message[4096];
   va_list ap;
