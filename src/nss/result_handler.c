@@ -139,6 +139,7 @@ enum nss_status copy_group_members_to_group(
   my_ulonglong rows_len = mysql_num_rows(members_query_result);
   
   // array of pointers to strings (members)
+  #pragma GCC diagnostic ignored "-Wcast-align"
   char **ptr_array = (char**)&(buffer[*occupied_buffer]);
   int ptr_size = sizeof(char*) * (rows_len + 1);
   

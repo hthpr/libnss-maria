@@ -5,6 +5,7 @@ set (PROJECT_BINARY_DIR src)
 # find mariadb or mysql
 find_package(PkgConfig REQUIRED)
 pkg_search_module(MARMYSQL REQUIRED libmariadb libmysqlclient)
+pkg_search_module(LIBCONFIG REQUIRED libconfig)
 
 if (FREEBSD)
   set(FBSD_SOURCES "nss/bsdnss.c")
@@ -44,8 +45,8 @@ set_target_properties(nss_maria PROPERTIES
   SOVERSION ${nss_maria_VERSION_MAJOR}
 )
 
-include_directories(SYSTEM ${MARMYSQL_INCLUDE_DIRS})
-target_link_libraries(nss_maria config ${MARMYSQL_LDFLAGS})
+include_directories(SYSTEM ${MARMYSQL_INCLUDE_DIRS} ${LIBCONFIG_INCLUDE_DIRS})
+target_link_libraries(nss_maria config ${MARMYSQL_LDFLAGS} ${LIBCONFIG_LDFLAGS})
 
 add_executable(config_db_settings "util/config_db_settings.c")
 target_link_libraries(config_db_settings nss_maria config ${MARMYSQL_LDFLAGS})
