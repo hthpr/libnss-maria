@@ -88,7 +88,7 @@ getspent:%s;getgrnam:%s;getgrgid:%s;getgrent:%s;memsbygid:%s;gidsbymem:%s",
         config->memsbygid,
         config->gidsbymem
       );
-#elif HAVE_GROUP
+#elif defined(HAVE_GROUP)
       debug_print_var("settings dbhost:%s;dbname:%s;\
 dbuser:%s;dbpass:%s;dbport:%lld;getpwnam:%s;getpwuid:%s;getpwent:%s;\
 getgrnam:%s;getgrgid:%s;getgrent:%s;memsbygid:%s;gidsbymem:%s",
