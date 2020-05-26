@@ -93,6 +93,7 @@ enum nss_status copy_db_row_to_shadow(MYSQL_ROW row, struct spwd *shadow_result,
 }
 #endif /* HAVE_SHADOW_H */
 
+#ifdef HAVE_GROUP
 enum nss_status copy_db_row_to_group(
   MYSQL_ROW row,
   struct group *group_result,
@@ -216,3 +217,4 @@ enum nss_status copy_gids(
 
   return NSS_STATUS_SUCCESS;
 }
+#endif /* HAVE_GROUP */

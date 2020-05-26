@@ -28,17 +28,21 @@
 
 #include "config.h"
 #include "passwd.h"
+#ifdef HAVE_GROUP
 #include "group.h"
+#endif
 
 /* FreeBSD specific register function */
 ns_mtab *nss_module_register(const char *source, unsigned int *mtabsize,
                              nss_module_unregister_fn *unreg);
 
+#ifdef HAVE_GROUP
 NSS_METHOD_PROTOTYPE(__nss_compat_getgrnam_r);
 NSS_METHOD_PROTOTYPE(__nss_compat_getgrgid_r);
 NSS_METHOD_PROTOTYPE(__nss_compat_getgrent_r);
 NSS_METHOD_PROTOTYPE(__nss_compat_setgrent);
 NSS_METHOD_PROTOTYPE(__nss_compat_endgrent);
+#endif /* HAVE_GROUP */
 
 NSS_METHOD_PROTOTYPE(__nss_compat_getpwnam_r);
 NSS_METHOD_PROTOTYPE(__nss_compat_getpwuid_r);
@@ -46,6 +50,7 @@ NSS_METHOD_PROTOTYPE(__nss_compat_getpwent_r);
 NSS_METHOD_PROTOTYPE(__nss_compat_setpwent);
 NSS_METHOD_PROTOTYPE(__nss_compat_endpwent);
 
+#ifdef HAVE_GROUP
 static ns_mtab methods[] = {
   { NSDB_GROUP, "getgrnam_r", __nss_compat_getgrnam_r, (void *)_nss_maria_getgrnam_r },
   { NSDB_GROUP, "getgrgid_r", __nss_compat_getgrgid_r, (void *)_nss_maria_getgrgid_r },
@@ -60,6 +65,15 @@ static ns_mtab methods[] = {
   { NSDB_PASSWD, "endpwent",   __nss_compat_endpwent,   (void *)_nss_maria_endpwent },
 
 };
+#else
+static ns_mtab methods[] = {
+  { NSDB_PASSWD, "getpwnam_r", __nss_compat_getpwnam_r, (void *)_nss_maria_getpwnam_r },
+  { NSDB_PASSWD, "getpwuid_r", __nss_compat_getpwuid_r, (void *)_nss_maria_getpwuid_r },
+  { NSDB_PASSWD, "getpwent_r", __nss_compat_getpwent_r, (void *)_nss_maria_getpwent_r },
+  { NSDB_PASSWD, "setpwent",   __nss_compat_setpwent,   (void *)_nss_maria_setpwent },
+  { NSDB_PASSWD, "endpwent",   __nss_compat_endpwent,   (void *)_nss_maria_endpwent },
+};
+#endif /* HAVE_GROUP */
 
 ns_mtab *nss_module_register(const char *source, unsigned int *mtabsize,
                              nss_module_unregister_fn *unreg)

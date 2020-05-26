@@ -10,7 +10,9 @@
 #ifdef HAVE_SHADOW_H
 #include <shadow.h>
 #endif
+#ifdef HAVE_GROUP
 #include <grp.h>
+#endif
 #include <mysql.h>
 #include "config.h"
 
@@ -18,6 +20,7 @@ enum nss_status copy_db_row_to_passwd(MYSQL_ROW row, struct passwd *passwd_resul
 #ifdef HAVE_SHADOW_H
 enum nss_status copy_db_row_to_shadow(MYSQL_ROW row, struct spwd *shadow_result, char *buffer, size_t buflen, int *errnop);
 #endif
+#ifdef HAVE_GROUP
 enum nss_status copy_db_row_to_group(
   MYSQL_ROW row,
   struct group *group_result,
@@ -42,6 +45,7 @@ enum nss_status copy_gids(
   long int limit,
   int *errnop
 );
+#endif /* HAVE_GROUP */
 
 #define CLEANUP() \
   if(settings != NULL) free(settings);\

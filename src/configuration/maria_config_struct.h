@@ -30,6 +30,7 @@ typedef struct Maria_configs {
   char getspent[8192];
 #endif /* HAVE_SHADOW_H */
 
+#ifdef HAVE_GROUP
   // group SQL queries
   // get group by name
   char getgrnam[8192];
@@ -43,6 +44,7 @@ typedef struct Maria_configs {
 
   // not in glibc - get groups by user name
   char gidsbymem[8192];
+#endif /* HAVE_GROUP */
 
 } Maria_config;
 

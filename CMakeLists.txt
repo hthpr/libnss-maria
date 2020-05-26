@@ -24,6 +24,9 @@ endif()
 
 include(DefinePlatformDefaults.cmake)
 
+# Build options
+option(ENABLE_GROUP "Enable lookup of groups" ON)
+
 # config.h checks
 include(ConfigureChecks.cmake)
 configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)

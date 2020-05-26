@@ -7,6 +7,11 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(MARMYSQL REQUIRED libmariadb libmysqlclient)
 pkg_search_module(LIBCONFIG REQUIRED libconfig)
 
+if (ENABLE_GROUP)
+  set(GROUP_SOURCES "nss/group.c")
+  add_compile_definitions(HAVE_GROUP)
+endif()
+
 if (FREEBSD)
   set(FBSD_SOURCES "nss/bsdnss.c")
 endif()
@@ -20,12 +25,12 @@ add_library(nss_maria SHARED
   "configuration/maria_config_helpers.c"
   "logger/maria_logger.c"
   "nss/passwd.c"
-  "nss/group.c"
   "nss/result_handler.c"
   "str_replace.c"
   "mariadb/query.c"
   ${FBSD_SOURCES}
   ${SHADOW_SOURCES}
+  ${GROUP_SOURCES}
 )
 
 # soname (MAJOR) version must be 2 (probably relates to glibc version, i.e. 2.26).

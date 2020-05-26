@@ -11,8 +11,10 @@ void maria_initialize_config(Maria_config *config) {
 #ifdef HAVE_SHADOW_H
   config->getspnam[0] = config->getspent[0] = '\0';
 #endif
+#ifdef HAVE_GROUP
   config->getgrnam[0] = config->getgrgid[0] = config->getgrent[0] = '\0';
   config->memsbygid[0] = config->gidsbymem[0] = '\0';
+#endif
 }
 
 void maria_load_string_setting(config_t libconfig_object, char *destination, const char *selector) {
@@ -55,12 +57,14 @@ int maria_set_config_from_file(const char *path, Maria_config *config) {
       maria_load_string_setting(libconfig_object, config->getspent, "nss_queries.getspent");
 #endif
 
+#ifdef HAVE_GROUP
       maria_load_string_setting(libconfig_object, config->getgrnam, "nss_queries.getgrnam");
       maria_load_string_setting(libconfig_object, config->getgrgid, "nss_queries.getgrgid");
       maria_load_string_setting(libconfig_object, config->getgrent, "nss_queries.getgrent");
 
       maria_load_string_setting(libconfig_object, config->memsbygid, "nss_queries.memsbygid");
       maria_load_string_setting(libconfig_object, config->gidsbymem, "nss_queries.gidsbymem");
+#endif
 
       config_destroy (&libconfig_object);
 
@@ -84,7 +88,7 @@ getspent:%s;getgrnam:%s;getgrgid:%s;getgrent:%s;memsbygid:%s;gidsbymem:%s",
         config->memsbygid,
         config->gidsbymem
       );
-#else
+#elif HAVE_GROUP
       debug_print_var("settings dbhost:%s;dbname:%s;\
 dbuser:%s;dbpass:%s;dbport:%lld;getpwnam:%s;getpwuid:%s;getpwent:%s;\
 getgrnam:%s;getgrgid:%s;getgrent:%s;memsbygid:%s;gidsbymem:%s",
@@ -101,6 +105,18 @@ getgrnam:%s;getgrgid:%s;getgrent:%s;memsbygid:%s;gidsbymem:%s",
         config->getgrent,
         config->memsbygid,
         config->gidsbymem
+      );
+#else
+      debug_print_var("settings dbhost:%s;dbname:%s;\
+dbuser:%s;dbpass:%s;dbport:%lld;getpwnam:%s;getpwuid:%s;getpwent:%s",
+        config->dbhost,
+        config->dbname,
+        config->dbuser,
+        config->dbpass,
+        config->dbport,
+        config->getpwnam,
+        config->getpwuid,
+        config->getpwent
       );
 #endif /* HAVE_SHADOW_H */
 
