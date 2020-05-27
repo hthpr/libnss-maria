@@ -18,6 +18,7 @@ set(ENV{RELEASE_OPTIONS} "-O3;-Werror")
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
   add_compile_options($ENV{COMPILE_OPTIONS} $ENV{DEBUG_OPTIONS})
+  add_compile_definitions(NDEBUG)
 else()
   add_compile_options($ENV{COMPILE_OPTIONS} $ENV{RELEASE_OPTIONS})
 endif()

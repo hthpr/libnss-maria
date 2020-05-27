@@ -5,7 +5,7 @@
 
 void maria_log(const char *message, ...);
 
-#ifdef NDEBUG
+#ifndef NDEBUG
   #define debug_print(msg)
 #else
   #define debug_print(msg) \
@@ -21,7 +21,7 @@ void maria_log(const char *message, ...);
     } while (0);
 #endif
 
-#ifdef NDEBUG
+#ifndef NDEBUG
   #define debug_print_var(...)
 #else
   #define debug_print_var(...) \

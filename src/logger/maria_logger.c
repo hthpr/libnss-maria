@@ -14,7 +14,7 @@ void maria_log(const char *message, ...) {
   syslog(LOG_INFO, "%s", assembled_message);
   closelog();
 
-#ifndef NDEBUG
+#ifdef NDEBUG
   va_start(ap, message);
   vfprintf(stderr, message, ap);
   va_end(ap);
